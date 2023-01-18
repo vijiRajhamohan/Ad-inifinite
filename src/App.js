@@ -1,23 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import InfiniteScroll from "react-infinite-scroll-component";
+
+const style = {
+  height: 30,
+  border: "1px solid green",
+  margin: 6,
+  padding: 8,
+};
 
 function App() {
+  
+  const [data, setData] = useState(Array.from({ length: 20 }));
+  const [more, setMore] = useState(true);
+
+  const fetchData = () => {
+    if (data.length < 150) {
+      setTimeout(() => {
+        setData(data.concat(Array.from({ length: 20 })));
+      }, 1500);
+    } else {
+      setMore(false);
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h3>INFINITY SCROLL</h3>
+      <InfiniteScroll
+        dataLength={data.length}
+        next={fetchData}
+        loader={<h4>Loading...</h4>}
+        hasMore={more}
+        endMessage={<h4>end...</h4>}
+      >
+        {data.map((res, key) => {
+          return (
+            <div style={style} key={key}>
+              Box -{key}
+            </div>
+          );
+        })}
+      </InfiniteScroll>
     </div>
   );
 }
